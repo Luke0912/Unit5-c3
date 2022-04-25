@@ -1,14 +1,17 @@
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams, Navigate } from "react-router-dom";
+import { StatContext } from "../Contexts/StatsContext";
+import { useContext, useState } from "react";
 
 export const EmployeeDetails = () => {
+  const { handleStat, stat } = useContext(StatContext);
   const { id } = useParams();
   const [obj, setObj] = useState({});
   useEffect(() => {
     axios.get(`http://localhost:8080/employee/${id}`).then((data) => {
       setObj(data.data);
-      console.log(data.data)
+      console.log(data.data);
     });
   }, []);
   return (
@@ -27,11 +30,15 @@ export const EmployeeDetails = () => {
       Title: <b className="title">{obj.title}</b>
       {/* Show this button only if user is not already terminated (users status is working) */}
       {obj.status !== "terminated" && (
-        <button className="fire">Fire Employee</button>
+        <button className="fire" onClick={handleStat.bind(null, "terminated")}>
+          Fire Employee
+        </button>
       )}
       {/* Show this button only if user is not already team lead or terminated */}
       {obj.status !== "terminated" && obj.title !== "Team Lead" && (
-        <button className="promote">promote</button>
+        <button className="promote" onClick={handleStat.bind(null, "promoted")}>
+          promote
+        </button>
       )}
     </div>
   );
